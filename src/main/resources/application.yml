@@ -1,7 +1,7 @@
 server:  port: 7070
 spring:
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/blog_01?serverTimezone=Asia/Seoul
     username: cos
     password: 12345
