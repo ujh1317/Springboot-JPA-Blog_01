@@ -50,6 +50,6 @@ public class Board {
 	private List<Reply> reply;
 	
 	@CreationTimestamp
-	private Timestamp createDate;
+	private Timestamp createDate; //날짜,시간
 	
 }//class

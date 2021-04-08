@@ -26,10 +26,10 @@ public class Reply {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id; 
+	private int id; //댓글 아이디
 	
 	@Column(nullable = false, length = 200)
-	private String content;
+	private String content; //댓글 내용
 	
 	@ManyToOne
 	@JoinColumn(name = "boardId")
@@ -40,6 +40,6 @@ public class Reply {
 	private User user;
 	
 	@CreationTimestamp
-	private Timestamp createDate;
+	private Timestamp createDate; //날짜,시간
 	
 }//class
