@@ -19,7 +19,7 @@ public class UserApiController {
 	@Autowired
 	private UserService userService;
 	
-	@PostMapping("/api/user")
+	@PostMapping("/auth/joinProc")
 	public ResponseDto<Integer> save(@RequestBody User user) { //username, password, email
 		System.out.println("UserApiController : save 호출됨");
 		
@@ -29,6 +29,8 @@ public class UserApiController {
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}//save()
 	
+	/*
+	 시큐리티로 대체
 	@PostMapping("/api/user/login")
 	public ResponseDto<Integer> login(@RequestBody User user, HttpSession session) {
 		System.out.println("UserApiController : login 호출됨");
@@ -39,5 +41,6 @@ public class UserApiController {
 		}//if
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}//login()
+	*/
 	
 }//class

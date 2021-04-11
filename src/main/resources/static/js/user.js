@@ -3,9 +3,6 @@ let index = {
 		$("#btn-save").on("click", () => { //funtion(){}, ()=>{}  this를 바인딩하기 위해서
 			this.save();
 		});
-		$("#btn-login").on("click", () => {
-			this.login();
-		});
 	},
 	
 	save: function() {
@@ -22,40 +19,18 @@ let index = {
 		$.ajax({
 			//회원가입 수행 요청
 			type: "POST",
-			url: "/blog_01/api/user",
+			url: "/auth/joinProc",
 			data: JSON.stringify(data), //http body데이터
 			contentType: "application/json; charset=utf-8",
 			dataType: "json"
 		}).done(function(resp){
 			alert("회원가입이 완료 되었습니다.");
 			console.log(resp);
-			location.href="/blog_01";
+			location.href="/";
 		}).fail(function(error){
 			alert(JSON.stringify(error));
 		}); 
-		
 	},
-	
-	login: function() {
-		let data = {
-			username: $("#username").val(),
-			password: $("#password").val()
-		};
-		
-		$.ajax({
-			type: "POST",
-			url: "/blog_01/api/user/login",
-			data: JSON.stringify(data), //http body데이터
-			contentType: "application/json; charset=utf-8",
-			dataType: "json"
-		}).done(function(resp){
-			alert("로그인이 완료 되었습니다.");
-			location.href="/blog_01";
-		}).fail(function(error){
-			alert(JSON.stringify(error));
-		}); 
-		
-	}
 
 }
 
