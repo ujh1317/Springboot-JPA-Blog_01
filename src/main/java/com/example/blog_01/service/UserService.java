@@ -1,7 +1,6 @@
 package com.example.blog_01.service;
 
-import javax.transaction.Transactional;
-
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,5 +17,10 @@ public class UserService {
 	public void join(User user) {
 		userRepository.save(user);
 	}//save()
+	
+	@Transactional(readOnly = true) //정합성 유지
+	public User login(User user) {
+		return userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword());
+	}//login()
 	
 }//class
