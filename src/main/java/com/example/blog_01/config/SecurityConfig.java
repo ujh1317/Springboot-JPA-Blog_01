@@ -5,12 +5,17 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration //빈등록(IoC관리)
 @EnableWebSecurity //시큐리티 필터가 등록된다.
 @EnableGlobalMethodSecurity(prePostEnabled = true) //특정주소로 접근을 하면 권한 및 인증을 미리 체크하겠다.
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+	public BCryptPasswordEncoder encodePWD() {
+		return new BCryptPasswordEncoder();
+	}//encodePWD()
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
