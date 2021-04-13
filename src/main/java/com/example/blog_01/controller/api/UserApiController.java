@@ -23,7 +23,6 @@ public class UserApiController {
 	public ResponseDto<Integer> save(@RequestBody User user) { //username, password, email
 		System.out.println("UserApiController : save 호출됨");
 		
-		user.setRole(RoleType.USER);
 		userService.join(user);
 		
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
