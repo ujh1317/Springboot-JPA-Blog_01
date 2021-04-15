@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.blog_01.config.auth.PrincipalDetail;
 import com.example.blog_01.model.Board;
 import com.example.blog_01.model.User;
 import com.example.blog_01.repository.BoardRepository;
@@ -23,15 +24,28 @@ public class BoardService {
 		boardRepository.save(board);
 	}//write()
 	
+	@Transactional(readOnly = true)
 	public Page<Board> boardList(Pageable pageable){
 		return boardRepository.findAll(pageable);
 	}//boardList()
 	
+	@Transactional(readOnly = true)
 	public Board boardDetail(int id) {
 		return boardRepository.findById(id)
 				.orElseThrow(()->{
 					return new IllegalArgumentException("글 상세보기 실패 : 아이디를 찾을 수 없습니다.");
 				});
 	}//boardDetail()
+	
+	@Transactional
+	public void boardDelete(int id, PrincipalDetail principal) {
+		Board board = boardRepository.findById(id).orElseThrow(()->{
+			return new IllegalArgumentException("글 찾기 실패 : 해당 게시글을 찾을 수 없습니다.");
+		});
+		if(board.getUser().getId() != principal.getUser().getId()) {
+			throw new IllegalArgumentException("글 삭제 실패 : 해당 게시글을 삭제할 권한이 없습니다.");
+		}
+		boardRepository.delete(board);
+	}//boardDelete()
 	
 }//class
