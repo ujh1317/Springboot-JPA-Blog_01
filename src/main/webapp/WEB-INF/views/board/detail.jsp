@@ -22,7 +22,10 @@
 	<div class="form-group">
 		<div>${board.content}</div>
 	</div>
-
+	<hr />
+	
+	
+	
 </div>
 
 <script src="/js/board.js"></script>

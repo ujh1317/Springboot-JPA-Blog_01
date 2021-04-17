@@ -1,9 +1,17 @@
 package com.example.blog_01.controller;
 
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -13,6 +21,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.example.blog_01.model.KakaoProfile;
 import com.example.blog_01.model.OAuthToken;
+import com.example.blog_01.model.User;
+import com.example.blog_01.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +33,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class UserController {
+	
+	@Value("${cos.key}")
+	private String cosKey;
+	
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	
+	@Autowired
+	private UserService userService;
 
 	@GetMapping("/auth/joinForm")
 	public String joinForm() {
@@ -35,7 +54,7 @@ public class UserController {
 	}//loginForm()
 	
 	@GetMapping("/auth/kakao/callback")
-	public @ResponseBody String kakaoCallback(String code) {
+	public String kakaoCallback(String code) {
 		
 		RestTemplate rt = new RestTemplate();
 		
@@ -104,8 +123,29 @@ public class UserController {
 		System.out.println("카카오 아이디(번호) : "+kakaoProfile.getId());
 		System.out.println("카카오 이메일 : "+kakaoProfile.getKakao_account().getEmail());
 		
-		return response2.getBody();
-	}
+		System.out.println("블로그서버 유저네임 : "+kakaoProfile.getKakao_account().getEmail()+"_"+kakaoProfile.getId());
+		System.out.println("블로그서버 이메일 : "+kakaoProfile.getKakao_account().getEmail());
+		System.out.println("블로그서버 패스워드 : "+cosKey);
+		
+		User kakaoUser = User.builder()
+				.username(kakaoProfile.getKakao_account().getEmail()+"_"+kakaoProfile.getId())
+				.password(cosKey)
+				.email(kakaoProfile.getKakao_account().getEmail())
+				.oauth("kakao")
+				.build();
+		
+		User originUser = userService.findByUser(kakaoUser.getUsername());
+		if(originUser.getUsername() == null) {
+			System.out.println("---------가입된 회원이 아닙니다.--------");
+			userService.join(kakaoUser);
+		}//if
+		
+		//로그인 처리
+		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(kakaoUser.getUsername(), cosKey));
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+		return "redirect:/";
+	}//kakaoCallback()
 	
 	@GetMapping("/user/updateForm")
 	public String updateForm() {
