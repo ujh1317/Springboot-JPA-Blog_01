@@ -2,6 +2,10 @@ package com.example.blog_01.service;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +30,17 @@ public class UserService {
 		user.setRole(RoleType.USER);
 		userRepository.save(user);
 	}//save()
+	
+	@Transactional
+	public void userUpdate(User user) {
+		User persistance = userRepository.findById(user.getId()).orElseThrow(()->{
+			return new IllegalArgumentException("회원찾기 실패");
+		});
+		String rawPassword = user.getPassword();
+		String encPassword = encoder.encode(rawPassword);
+		persistance.setPassword(encPassword);
+		persistance.setEmail(user.getEmail());
+	}//userUpdate()
 	
 	/*
 	@Transactional(readOnly = true) //정합성 유지
