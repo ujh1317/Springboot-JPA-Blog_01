@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.blog_01.config.auth.PrincipalDetail;
 import com.example.blog_01.dto.ResponseDto;
 import com.example.blog_01.model.Board;
+import com.example.blog_01.model.Reply;
 import com.example.blog_01.service.BoardService;
 
 @RestController
@@ -25,7 +26,7 @@ public class BoardApiController {
 	
 	@PostMapping("/api/board")
 	public ResponseDto<Integer> save(@RequestBody Board board, @AuthenticationPrincipal PrincipalDetail principal) {
-		boardService.write(board, principal.getUser());
+		boardService.boardWrite(board, principal.getUser());
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}//save()
 	
@@ -40,5 +41,11 @@ public class BoardApiController {
 		boardService.boardDelete(id, principal);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}//deleteById()
+	
+	@PostMapping("/api/board/{boardId}/reply")
+	public ResponseDto<Integer> replySave(@PathVariable int boardId, @RequestBody Reply reply, @AuthenticationPrincipal PrincipalDetail principal) {
+		boardService.replyWrite(principal.getUser(), boardId, reply);
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}//save()
 	
 }//class

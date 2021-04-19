@@ -8,17 +8,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.blog_01.config.auth.PrincipalDetail;
 import com.example.blog_01.model.Board;
+import com.example.blog_01.model.Reply;
 import com.example.blog_01.model.User;
 import com.example.blog_01.repository.BoardRepository;
+import com.example.blog_01.repository.ReplyRepository;
 
 @Service
 public class BoardService {
 
 	@Autowired
 	private BoardRepository boardRepository;
+	
+	@Autowired
+	private ReplyRepository replyRepository;
 
 	@Transactional
-	public void write(Board board, User user) {
+	public void boardWrite(Board board, User user) {
 		board.setCount(0);
 		board.setUser(user);
 		boardRepository.save(board);
@@ -57,5 +62,17 @@ public class BoardService {
 		}
 		boardRepository.delete(board);
 	}//boardDelete()
+	
+	@Transactional
+	public void replyWrite(User user, int boardId, Reply requestReply) {
+		Board board = boardRepository.findById(boardId).orElseThrow(()->{
+			return new IllegalArgumentException("댓글 쓰기 실패 : 게시글 id를 찾을 수 없습니다.");
+		});
+		
+		requestReply.setUser(user);
+		requestReply.setBoard(board);
+		
+		replyRepository.save(requestReply);
+	}//replyWrite()
 	
 }//class
