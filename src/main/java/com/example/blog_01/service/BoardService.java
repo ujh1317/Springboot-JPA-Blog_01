@@ -70,4 +70,9 @@ public class BoardService {
 		replyRepository.mSave(replySaveRequestDto.getUserId(), replySaveRequestDto.getBoardId(), replySaveRequestDto.getContent());
 	}//replyWrite()
 	
+	@Transactional
+	public void replyDelete(int replyId) {
+		replyRepository.deleteById(replyId);
+	}//replyDelete()
+	
 }//class
